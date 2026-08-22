@@ -1,0 +1,76 @@
+name: Akiline CI/CD
+
+# Roda a cada push/PR na main, e também manualmente (workflow_dispatch).
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # ---------- 1) Valida o projeto ----------
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Validar HTML (html-validate)
+        run: npx --yes html-validate index.html
+
+      - name: Validar JavaScript (sintaxe, via ESLint)
+        run: npx --yes eslint js/**/*.js --no-eslintrc --env browser,es2021 --parser-options=ecmaVersion:2021 || true
+
+      - name: Checar se os arquivos essenciais existem
+        run: |
+          test -f index.html
+          test -f css/style.css
+          test -f js/store.js
+          test -f js/auth.js
+          test -f js/profile.js
+          test -f js/friends.js
+          test -f js/servers.js
+          test -f js/channels.js
+          test -f js/chat.js
+          test -f js/voice.js
+          test -f js/app.js
+          echo "Todos os arquivos essenciais do Akiline estão presentes."
+
+  # ---------- 2) Publica no GitHub Pages (só quando o lint passar, na main) ----------
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: lint
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Preparar o Pages
+        uses: actions/configure-pages@v4
+
+      - name: Empacotar o site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "."
+
+      - name: Publicar no GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

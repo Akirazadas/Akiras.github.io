@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Akiline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===================== AUTH SCREEN ===================== -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="brand-mark">🔥</div>
+    <h1 class="brand-title">Akiline</h1>
+    <p class="brand-tag">seu cantinho com a galera</p>
+
+    <div id="auth-login-view">
+      <button class="google-btn" id="google-login-btn">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.9 32.6 29.4 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.2-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.5 3 24 3 16.1 3 9.3 7.4 6.3 14.7z"/><path fill="#4CAF50" d="M24 45c5.3 0 10.2-1.9 13.9-5.1l-6.4-5.4C29.4 36.5 26.8 37 24 37c-5.4 0-9.9-3.4-11.4-8.2l-6.5 5C9.2 40.6 16 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.7 2-1.9 3.7-3.5 5l6.4 5.4C41.6 35.5 45 30.2 45 24c0-1.2-.1-2.4-.4-3.5z"/></svg>
+        Entrar com Google
+      </button>
+      <div class="auth-divider"><span>ou</span></div>
+      <input class="auth-field" id="login-username" placeholder="nome de usuário" maxlength="20">
+      <button class="primary-btn" id="username-login-btn">Entrar / Criar conta</button>
+      <p class="auth-note">
+        ⚠️ O botão do Google aqui é uma <b>simulação visual</b> — este ambiente não tem um backend
+        para validar login real do Google (isso exigiria um servidor com OAuth configurado). Ele cria
+        uma conta local do mesmo jeito que o campo de usuário abaixo.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== APP SHELL ===================== -->
+<div id="app" style="display:none;">
+
+  <!-- Server rail -->
+  <nav id="server-rail">
+    <button class="rail-item home-item active" id="rail-home" title="Página inicial / Amigos">
+      <span class="rail-icon">🏠</span>
+    </button>
+    <div class="rail-sep"></div>
+    <div id="rail-servers"></div>
+    <button class="rail-item add-item" id="rail-add-server" title="Adicionar ou criar servidor">
+      <span class="rail-icon">+</span>
+    </button>
+  </nav>
+
+  <!-- ===================== HOME / FRIENDS VIEW ===================== -->
+  <div id="home-view" class="view-pane">
+    <aside id="home-sidebar">
+      <div class="home-sidebar-header">
+        <span class="home-title">🧭 Início</span>
+      </div>
+      <div class="dm-list" id="dm-list"></div>
+      <div class="you-box">
+        <div class="you-avatar" id="you-avatar-home">?</div>
+        <div class="you-info">
+          <div class="you-name" id="you-name-home">—</div>
+          <div class="you-status-line" id="you-status-home">defina seu perfil</div>
+        </div>
+        <button class="icon-btn mic-toggle-mini" id="mic-toggle-mini" title="Ligar/desligar microfone">🎙️</button>
+        <button class="icon-btn" id="open-profile-btn-home" title="Editar perfil">✎</button>
+      </div>
+    </aside>
+
+    <main id="friends-main">
+      <div class="friends-header">
+        <span class="friends-title">👥 Amigos</span>
+        <div class="friends-tabs" id="friends-tabs">
+          <button class="friends-tab active" data-tab="todos">Todos</button>
+          <button class="friends-tab" data-tab="online">Disponível</button>
+          <button class="friends-tab" data-tab="pendente">Pendente <span class="tab-badge" id="pending-badge" style="display:none;">0</span></button>
+          <button class="friends-tab add-tab" data-tab="adicionar">+ Adicionar amigo</button>
+        </div>
+      </div>
+      <div class="friends-content" id="friends-content"></div>
+    </main>
+  </div>
+
+  <!-- ===================== DM CHAT VIEW ===================== -->
+  <div id="dm-view" class="view-pane" style="display:none;">
+    <aside id="home-sidebar-dm">
+      <div class="home-sidebar-header"><span class="home-title">🧭 Início</span></div>
+      <div class="dm-list" id="dm-list-2"></div>
+      <div class="you-box">
+        <div class="you-avatar" id="you-avatar-dm">?</div>
+        <div class="you-info">
+          <div class="you-name" id="you-name-dm">—</div>
+          <div class="you-status-line" id="you-status-dm">defina seu perfil</div>
+        </div>
+        <button class="icon-btn mic-toggle-mini" id="mic-toggle-mini-dm" title="Ligar/desligar microfone">🎙️</button>
+        <button class="icon-btn" id="open-profile-btn-dm" title="Editar perfil">✎</button>
+      </div>
+    </aside>
+    <main id="dm-main">
+      <div class="chat-header">
+        <span class="hash" id="dm-header-name">@amigo</span>
+        <span class="topic">— conversa direta</span>
+      </div>
+      <div id="dm-messages"></div>
+      <div class="composer">
+        <div class="composer-inner">
+          <input id="dm-msg-input" type="text" placeholder="Manda uma mensagem…" maxlength="1000">
+          <button id="dm-send-btn">Enviar</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===================== SERVER VIEW ===================== -->
+  <div id="server-view" class="view-pane" style="display:none;">
+    <aside id="sidebar">
+      <div class="server-header">
+        <div class="ember-mark">🔥</div>
+        <div>
+          <div class="server-name" id="server-name-label">Servidor</div>
+          <div class="server-sub" id="server-sub-label">só quem tem a chave entra</div>
+        </div>
+        <button class="settings-gear" id="open-settings-btn" title="Configurações do servidor">⚙</button>
+      </div>
+      <div class="channel-list" id="channel-list"></div>
+      <div class="you-box">
+        <div class="you-avatar" id="you-avatar">?</div>
+        <div class="you-info" id="open-profile-trigger">
+          <div class="you-name" id="you-name">—</div>
+          <div class="you-status-line" id="you-status-line">defina seu perfil</div>
+        </div>
+        <button class="icon-btn mic-toggle-mini" id="mic-toggle-mini-server" title="Ligar/desligar microfone">🎙️</button>
+        <button class="icon-btn" id="open-profile-btn" title="Editar perfil">✎</button>
+      </div>
+    </aside>
+
+    <main id="main">
+      <div class="chat-header">
+        <button class="menu-toggle" id="menu-toggle">☰</button>
+        <span class="hash" id="channel-heading"># <span id="current-channel">geral</span></span>
+        <span class="topic" id="channel-topic">— papo livre da turma</span>
+        <div style="flex:1"></div>
+        <button class="members-toggle" id="members-toggle">👥</button>
+      </div>
+
+      <div id="messages"><div id="loading-msgs">carregando conversa…</div></div>
+      <div class="composer" id="composer">
+        <div class="composer-inner">
+          <input id="msg-input" type="text" placeholder="Manda uma mensagem pra galera…" maxlength="1000" disabled>
+          <button id="send-btn" disabled>Enviar</button>
+        </div>
+      </div>
+
+      <div id="voice-room">
+        <div class="voice-room-header">
+          <div class="vr-title">🔊 <span id="voice-room-name">Sala Geral</span></div>
+          <div class="vr-sub">canal de voz — entre para aparecer aqui pros seus amigos</div>
+        </div>
+        <div class="voice-note">
+          <b>Sobre esse canal:</b> a lista de participantes, quem está mutado e quem está compartilhando
+          tela é sincronizada de verdade entre todo mundo que abrir o Akiline. O áudio e o vídeo em si
+          só têm preview local nesse ambiente — não existe um servidor de retransmissão aqui, então som
+          e imagem não viajam de um dispositivo pro outro. É o "esqueleto" pronto pra plugar um provedor
+          de verdade (LiveKit, Agora, Daily) depois.
+        </div>
+        <div class="participant-grid" id="voice-participants"></div>
+        <div class="voice-controls" id="voice-controls-idle">
+          <button class="vc-btn join" id="join-voice-btn">🎙️ Entrar no canal</button>
+        </div>
+        <div class="voice-controls" id="voice-controls-active" style="display:none;">
+          <button class="vc-btn active" id="toggle-mic-btn">🎙️ Mic ligado</button>
+          <button class="vc-btn" id="toggle-screen-btn">🖥️ Compartilhar tela</button>
+          <button class="vc-btn danger" id="leave-voice-btn">📞 Sair do canal</button>
+        </div>
+      </div>
+    </main>
+
+    <aside id="members">
+      <div class="members-label">Na sala agora</div>
+      <div id="members-list"></div>
+    </aside>
+  </div>
+</div>
+
+<!-- ===================== MODALS ===================== -->
+
+<!-- Profile modal -->
+<div class="overlay" id="profile-overlay">
+  <div class="modal-box">
+    <button class="settings-close" id="close-profile-btn">✕</button>
+    <div class="profile-preview">
+      <div class="p-avatar-wrap">
+        <div class="p-avatar" id="profile-avatar-preview">?</div>
+        <span class="mic-status-dot" id="profile-mic-dot" title="Status do microfone">🎙️</span>
+      </div>
+      <div style="font-weight:700; font-size:15px;" id="profile-name-preview">—</div>
+      <div class="profile-mic-label" id="profile-mic-label">microfone ligado</div>
+    </div>
+    <div class="field-label">Nome de usuário (único, pra amigos te acharem)</div>
+    <input class="text-field" id="profile-handle-input" maxlength="20" placeholder="ex: joaozinho">
+    <div class="field-label">Apelido de exibição</div>
+    <input class="text-field" id="profile-nickname-input" maxlength="20" placeholder="Seu apelido">
+    <div class="field-label">Cor do avatar</div>
+    <div class="color-swatches" id="profile-color-swatches"></div>
+    <div class="field-label">Status / frase</div>
+    <input class="text-field" id="profile-status-input" maxlength="40" placeholder="ex: jogando até tarde 🎮">
+    <div class="field-label">Cargo (no servidor atual)</div>
+    <select class="text-field" id="profile-role-select"></select>
+    <div style="height:18px;"></div>
+    <button class="primary-btn" id="save-profile-btn">Salvar perfil</button>
+  </div>
+</div>
+
+<!-- Add / create server modal -->
+<div class="overlay" id="server-picker-overlay">
+  <div class="modal-box" id="server-picker-box">
+    <button class="settings-close" id="close-server-picker-btn">✕</button>
+    <h2 class="picker-title">Adicionar um servidor</h2>
+    <p class="settings-desc">Crie o seu ou entre em um que um amigo já criou.</p>
+    <div class="picker-options">
+      <button class="picker-option" id="picker-create-btn">
+        <span class="picker-emoji">➕</span>
+        <span>
+          <div class="picker-opt-title">Criar meu servidor</div>
+          <div class="picker-opt-sub">Monte do zero, com seus próprios canais e cargos</div>
+        </span>
+      </button>
+      <button class="picker-option" id="picker-join-btn">
+        <span class="picker-emoji">🔑</span>
+        <span>
+          <div class="picker-opt-title">Entrar com um código</div>
+          <div class="picker-opt-sub">Use o código que um amigo te mandou</div>
+        </span>
+      </button>
+    </div>
+
+    <div id="picker-create-form" style="display:none;">
+      <div class="field-label">Nome do servidor</div>
+      <input class="text-field" id="new-server-name" placeholder="ex: Cabana dos Amigos" maxlength="40">
+      <button class="primary-btn" id="confirm-create-server-btn" style="margin-top:14px;">Criar servidor</button>
+    </div>
+    <div id="picker-join-form" style="display:none;">
+      <div class="field-label">Código do servidor</div>
+      <input class="text-field" id="join-server-code" placeholder="ex: AB3XQ2" maxlength="10" style="text-transform:uppercase;">
+      <div id="join-server-error" class="form-error"></div>
+      <button class="primary-btn" id="confirm-join-server-btn" style="margin-top:14px;">Entrar no servidor</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add friend modal (also used inline in Friends tab) -->
+<div class="overlay" id="add-friend-overlay">
+  <div class="modal-box" id="add-friend-box">
+    <button class="settings-close" id="close-add-friend-btn">✕</button>
+    <h2 class="picker-title">Adicionar amigo</h2>
+    <p class="settings-desc">Digite o nome de usuário exato do seu amigo no Akiline.</p>
+    <div class="field-label">Nome de usuário</div>
+    <input class="text-field" id="add-friend-input" placeholder="nomedeusuario">
+    <div id="add-friend-error" class="form-error"></div>
+    <button class="primary-btn" id="confirm-add-friend-btn" style="margin-top:14px;">Enviar pedido</button>
+  </div>
+</div>
+
+<!-- Server settings modal -->
+<div class="overlay" id="settings-overlay">
+  <div class="modal-box" id="settings-modal-box">
+    <button class="settings-close" id="close-settings-btn">✕</button>
+    <div class="settings-nav">
+      <div class="settings-nav-title">Configurações</div>
+      <button class="settings-tab active" data-tab="geral">Visão geral</button>
+      <button class="settings-tab" data-tab="categorias">Categorias</button>
+      <button class="settings-tab" data-tab="canais">Canais</button>
+      <button class="settings-tab" data-tab="cargos">Cargos</button>
+      <button class="settings-tab" data-tab="convite">Convite</button>
+    </div>
+    <div class="settings-content">
+
+      <div class="settings-pane" data-pane="geral">
+        <h2>Visão geral do servidor</h2>
+        <p class="settings-desc">O básico do seu servidor.</p>
+        <div class="field-label">Nome do servidor</div>
+        <input class="text-field" id="settings-server-name">
+        <button class="add-btn" id="save-server-name-btn" style="margin-top:14px;">Salvar nome</button>
+      </div>
+
+      <div class="settings-pane" data-pane="categorias" style="display:none;">
+        <h2>Categorias</h2>
+        <p class="settings-desc">Agrupam canais de texto e voz na barra lateral.</p>
+        <div id="categories-list"></div>
+        <div class="add-form">
+          <div class="add-form-row">
+            <input class="text-field" id="new-category-name" placeholder="Nome da nova categoria" maxlength="24">
+          </div>
+          <button class="add-btn" id="add-category-btn">+ Criar categoria</button>
+        </div>
+      </div>
+
+      <div class="settings-pane" data-pane="canais" style="display:none;">
+        <h2>Canais</h2>
+        <p class="settings-desc">Canais de texto para conversar, canais de voz para chamada.</p>
+        <div id="channels-list"></div>
+        <div class="add-form">
+          <div class="add-form-row">
+            <input class="text-field" id="new-channel-name" placeholder="nome-do-canal" maxlength="24">
+          </div>
+          <div class="add-form-row">
+            <select class="text-field" id="new-channel-type">
+              <option value="text"># Texto</option>
+              <option value="voice">🔊 Voz</option>
+            </select>
+            <select class="text-field" id="new-channel-category"></select>
+          </div>
+          <button class="add-btn" id="add-channel-btn">+ Criar canal</button>
+        </div>
+      </div>
+
+      <div class="settings-pane" data-pane="cargos" style="display:none;">
+        <h2>Cargos</h2>
+        <p class="settings-desc">Etiquetas coloridas que aparecem ao lado do nome de cada amigo.</p>
+        <div id="roles-list"></div>
+        <div class="add-form">
+          <div class="add-form-row">
+            <input class="text-field" id="new-role-name" placeholder="Nome do cargo" maxlength="18">
+            <input type="color" id="new-role-color" value="#E8A33D">
+          </div>
+          <button class="add-btn" id="add-role-btn">+ Criar cargo</button>
+        </div>
+      </div>
+
+      <div class="settings-pane" data-pane="convite" style="display:none;">
+        <h2>Convidar amigos</h2>
+        <p class="settings-desc">Compartilhe esse código — qualquer amigo pode usá-lo em "Adicionar servidor → Entrar com um código".</p>
+        <div class="invite-code-box" id="invite-code-box">------</div>
+        <button class="add-btn" id="copy-invite-btn">📋 Copiar código</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="js/store.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/profile.js"></script>
+<script src="js/friends.js"></script>
+<script src="js/servers.js"></script>
+<script src="js/channels.js"></script>
+<script src="js/chat.js"></script>
+<script src="js/voice.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
